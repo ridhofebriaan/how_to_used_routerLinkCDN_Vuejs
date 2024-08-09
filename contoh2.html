@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vue.js Menu Navigation</title>
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    <script src="https://unpkg.com/vue-router@4.0.15/dist/vue-router.global.js"></script>
+</head>
+<body>
+    <div id="app">
+        <nav>
+            <ul>
+                <li><router-link to="/">Home</router-link></li>
+                <li><router-link to="/about">About</router-link></li>
+                <li><router-link to="/contact">Contact</router-link></li>
+            </ul>
+        </nav>
+        <router-view></router-view>
+    </div>
+
+    <script>
+        async function loadComponent(url) {
+            try {
+                const response = await fetch(url);
+                if (!response.ok) {
+                    throw new Error(`Failed to load ${url}: ${response.statusText}`);
+                }
+                const text = await response.text();
+                return { template: text };
+            } catch (error) {
+                console.error(error);
+                return { template: '<div>Error loading component</div>' };
+            }
+        }
+
+        async function init() {
+            const Home = await loadComponent('components/home.php');
+            const About = await loadComponent('components/about.html');
+            const Contact = await loadComponent('components/contact.html');
+
+            const routes = [
+                { path: '/', component: Home },
+                { path: '/about', component: About },
+                { path: '/contact', component: Contact },
+            ];
+
+            const router = VueRouter.createRouter({
+                history: VueRouter.createWebHistory('/tes-code/'),
+                routes
+            });
+
+            const app = Vue.createApp({});
+            app.use(router);
+            app.mount('#app');
+
+            // Fallback for 404 errors
+            window.addEventListener('popstate', () => {
+                if (!routes.some(route => route.path === window.location.pathname.replace('/tes-code', ''))) {
+                    window.location.pathname = '/tes-code/';
+                }
+            });
+        }
+
+        init().catch(error => console.error('Failed to initialize app:', error));
+    </script>
+</body>
+</html>

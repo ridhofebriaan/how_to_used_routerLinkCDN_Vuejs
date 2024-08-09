@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vue.js Menu Navigation</title>
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    <script src="https://unpkg.com/vue-router@4.0.15/dist/vue-router.global.js"></script>
+</head>
+<body>
+    <div id="app">
+        <nav>
+            <ul>
+                <li><router-link to="/">Home</router-link></li>
+                <li><router-link to="/about">About</router-link></li>
+                <li><router-link to="/contact">Contact</router-link></li>
+            </ul>
+        </nav>
+        <router-view></router-view>
+    </div>
+
+    <!-- Templates -->
+    <script type="text/x-template" id="home-template">
+        <div>Home</div>
+    </script>
+
+    <script type="text/x-template" id="about-template">
+        <div>About</div>
+    </script>
+
+    <script type="text/x-template" id="contact-template">
+        <div>Contact</div>
+    </script>
+
+    <script>
+        const Home = { template: '#home-template' }
+        const About = { template: '#about-template' }
+        const Contact = { template: '#contact-template' }
+
+        const routes = [
+            { path: '/', component: Home },
+            { path: '/about', component: About },
+            { path: '/contact', component: Contact }
+        ]
+
+        const router = VueRouter.createRouter({
+            history: VueRouter.createWebHashHistory(),
+            routes
+        })
+
+        const app = Vue.createApp({})
+        app.use(router)
+        app.mount('#app')
+    </script>
+</body>
+</html>
